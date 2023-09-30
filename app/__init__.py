@@ -1,16 +1,15 @@
-# import flask module
 from flask import Flask
 from configuration import config
-from database.db import db
+from database.db import db, migrate
+
 app = Flask(__name__)
 
 app.config.from_object(config.DatabaseCredentials)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:localhost@db/alhikmaflaskapplication'
 
 db.init_app(app)
-
+migrate.init_app(app,db)
 from app import api
-from models import user
-
-with app.app_context():
-    db.create_all()
+from core import *
+app.register_blueprint(register, url_prefix='/register')
+# with app.app_context():
+#     db.create_all()
