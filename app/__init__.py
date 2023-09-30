@@ -9,7 +9,6 @@ app.config.from_object(config.DatabaseCredentials)
 
 db.init_app(app)
 
-
 from app import api
 from models import user
 
