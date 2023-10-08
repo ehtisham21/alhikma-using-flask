@@ -10,6 +10,6 @@ db.init_app(app)
 migrate.init_app(app,db)
 from app import api
 from core import *
-app.register_blueprint(register, url_prefix='/register')
+app.register_blueprint(core, url_prefix='/')
 # with app.app_context():
 #     db.create_all()
