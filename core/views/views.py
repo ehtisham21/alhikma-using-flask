@@ -5,7 +5,6 @@ from core.models import User
 from core.schemas.user_schema import UserSchema
 from database.db import db
 
-
 def register_view(action_type):
     if action_type == 'user':
         # data = request.get_json()
