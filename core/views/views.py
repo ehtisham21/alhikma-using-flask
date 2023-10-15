@@ -1,10 +1,10 @@
+import bcrypt
 from flask import jsonify, request, Response
 from marshmallow import ValidationError
 
-from core.models import User
+from core.models import User, Mosques
 from core.schemas.user_schema import UserSchema
-from database.db import db
-
+from werkzeug.security import check_password_hash
 def register_view(action_type):
     if action_type == 'user':
         # data = request.get_json()
@@ -20,8 +20,6 @@ def register_view(action_type):
                                               'email':email,'phone_number':phone_number})
             user_existed = User.query.filter_by(cnic_number=validated_data['cnic_number']).first()
             if not user_existed:
-                # create_user = User(first_name, last_name, cnic_number, email, phone_number)
-                # create_user.create()
                 new_user = User(**validated_data)
                 new_user.create()
                 return Response('You have successfully signed up. Please check your email for confirmation.', status=201)
@@ -31,6 +29,17 @@ def register_view(action_type):
             return jsonify(err.messages), 400
 
     elif action_type == 'mosque':
-        return jsonify(message='Mosque registration')
+        email = request.form.get('email')
+        mosque_name = request.form.get('mosque_name')
+        mosque_address = request.form.get('mosque_address')
+        password = request.form.get('password')
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        mosque_existed = Mosques.query.filter_by(email=email).first()
+        if not mosque_existed:
+            create_mosque = Mosques(email, mosque_name, mosque_address, hashed_password)
+            create_mosque.create()  # Here calling create functing to store the data in table.
+            return Response('You have successfully signed up. Please check your email for confirmation.', status=201)
+        else:
+            return Response('You already have an account with this email.', status=409)
     else:
         return jsonify(message='Invalid action type')
