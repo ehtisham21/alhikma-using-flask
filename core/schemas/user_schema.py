@@ -10,7 +10,6 @@ class UserSchema(ma.Schema):
     email = fields.Email(required=True)
     phone_number = fields.Number(required=True)
 
-
     @validates("first_name")
     def validate_first_name(self, value):
         if "first name" in value:
